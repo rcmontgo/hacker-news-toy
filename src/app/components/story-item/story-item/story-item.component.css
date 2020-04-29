@@ -14,6 +14,9 @@
   .grey-text {
     color: #828282
   }
+  .secondary-text {
+    font-size: small;
+  }
   a:link {
     color: #000000;
     text-decoration: none;
