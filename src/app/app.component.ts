@@ -42,7 +42,6 @@ export class AppComponent implements OnInit {
         if(searchStatus){
           this.searching = searchStatus
           const { searchStart, searchEnd} = this.newsService.getSearchResultsPage()
-          // guess were going to need to bind model
           this.searchValue = this.newsService.getSearch()
           this.searchStart = searchStart
           this.searchEnd = searchEnd
@@ -56,7 +55,7 @@ export class AppComponent implements OnInit {
       })
   }
 
-  // since we want to support search, we need to go ahead and fetch all stories per id
+  // since we want to support search, we need to go ahead and fetch all stories per id and put them in memory
   fetchAllStories() {
     this.stories = []
     this.fetchingStories = true;
