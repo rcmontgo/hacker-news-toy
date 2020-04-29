@@ -1,0 +1,15 @@
+<div class="flex-container flex-start">
+    <div class="flex-item list-number grey-text">{{start + i + 1}}.</div>
+    <div>
+      <div class="flex-container flex-start">
+        <div>
+          <a [attr.href]="story.url" [attr.aria-controls]="story.url" >{{story.title}}</a>
+        </div>
+      </div>
+      <div class="flex-container flex-start">
+        <div class="grey-text">
+          {{story.by}}
+        </div>
+      </div>
+    </div>
+  </div>

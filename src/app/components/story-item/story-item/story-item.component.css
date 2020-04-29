@@ -1,0 +1,23 @@
+.flex-container {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+  }
+  .flex-start {
+    justify-content: flex-start;
+  }
+  .flex-item.list-number {
+    margin: 0 5px;
+    min-width: 20px;
+  }
+  .grey-text {
+    color: #828282
+  }
+  a:link {
+    color: #000000;
+    text-decoration: none;
+  }
+  a:visited {
+    color: #828282;
+}
