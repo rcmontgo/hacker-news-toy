@@ -15,7 +15,8 @@
   .nav {
     display: flex;
     background-color: #ff6600;
-    height: 24px;
+    min-height: 24px;
+    flex-wrap: wrap;
   }
 
   .space {
