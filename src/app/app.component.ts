@@ -93,6 +93,8 @@ export class AppComponent implements OnInit {
     this.searching = false
     this.start = this.INIT_START
     this.end = this.INIT_END
+    this.searchStart = this.INIT_START
+    this.searchEnd = this.INIT_END
     this.newsService.persistTopNewsPage(this.start, this.end)
     // find any new stories
     this.newsService.getTopStories()
@@ -127,6 +129,10 @@ export class AppComponent implements OnInit {
     this.newsService.persistSearch(value)
     this.applySearchFilter()
     this.hideNextOption = this.filteredStories.length <= this.searchEnd
+    if(this.searchStart > this.filteredStories.length){
+      this.searchStart = this.INIT_START
+      this.searchEnd = this.INIT_END
+    }
   }
   applySearchFilter() {
     this.filteredStories = this.stories.filter(s => {
