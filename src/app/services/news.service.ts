@@ -21,9 +21,18 @@ export class NewsService {
   private storiesCacheObject = {};
 
   constructor(private http: HttpClient) {
-    this.storiesCacheObject = JSON.parse(localStorage.getItem(this.stories));
-    if (!this.storiesCacheObject) {
+    let storiesCacheObject = JSON.parse(localStorage.getItem(this.stories));
+    // there are no stories in cache, initialize cache
+    if (!storiesCacheObject) {
       localStorage.setItem(this.stories, JSON.stringify(this.storiesCacheObject));
+    }
+    // if cache exists in localStorage, assign value to member variable
+    if (storiesCacheObject) {
+      this.storiesCacheObject = storiesCacheObject;
+    }
+    let searchStatus = JSON.parse(localStorage.getItem(this.searchStatus));
+    if (!searchStatus) {
+      localStorage.setItem(this.searchStatus, JSON.stringify(false));
     }
   }
 

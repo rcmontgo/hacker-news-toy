@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { debounce } from 'lodash';
 import { NewsService } from './services/news.service';
 import { faSearch, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -27,8 +30,8 @@ export class AppComponent implements OnInit {
   public searchValue = null;
   public searching = false;
 
-  constructor(private newsService: NewsService) {}
-  
+  constructor(private newsService: NewsService) { }
+
   ngOnInit() {
     this.search = debounce(this.search, 500)
 
@@ -39,18 +42,18 @@ export class AppComponent implements OnInit {
           this.fetchAllStories()
         }
         const searchStatus = this.newsService.getSearchStatus()
-        if(searchStatus){
+        if (searchStatus) {
           this.searching = searchStatus
-          const { searchStart, searchEnd} = this.newsService.getSearchResultsPage()
+          const { searchStart, searchEnd } = this.newsService.getSearchResultsPage()
           this.searchValue = this.newsService.getSearch()
           this.searchStart = searchStart
           this.searchEnd = searchEnd
           this.applySearchFilter()
-        } 
-        if(!searchStatus && typeof searchStatus === 'boolean') {
-          const { start, end} = this.newsService.getTopNewsPage()
-          this.start = start
-          this.end = end
+        }
+        if (!searchStatus && typeof searchStatus === 'boolean') {
+          const { start, end } = this.newsService.getTopNewsPage()
+          this.start = start || this.INIT_START
+          this.end = end || this.INIT_END
         }
       })
   }
@@ -60,7 +63,7 @@ export class AppComponent implements OnInit {
     this.stories = []
     this.fetchingStories = true;
     this.topStoryIds.forEach(storyId => {
-      this.fetchStory(storyId)
+      this.fetchStory(storyId).subscribe()
     })
     this.fetchingStories = false;
   }
@@ -69,19 +72,19 @@ export class AppComponent implements OnInit {
   fetchStories() {
     this.fetchingStories = true;
     this.topStoryIds.slice(this.start, this.end + 1).forEach(storyId => {
-      this.fetchStory(storyId)
+      this.fetchStory(storyId).subscribe()
     })
     this.fetchingStories = false;
   }
 
-  fetchStory(storyId) {
+  fetchStory(storyId): Observable<any> {
     if (!storyId && storyId != 0) {
-      // raise error
+      return of(Error('storyId not provided'))
     }
-    this.newsService.getStory(storyId)
-      .subscribe(story => {
+    return this.newsService.getStory(storyId)
+      .pipe(map(story => {
         this.stories.push(story)
-      })
+      }))
   }
 
   topStories() {
@@ -98,7 +101,7 @@ export class AppComponent implements OnInit {
           this.topStoryIds = res
           this.fetchStories()
         }
-    })
+      })
   }
 
   onMoreStories() {
@@ -109,7 +112,7 @@ export class AppComponent implements OnInit {
     this.fetchStories()
     this.hideNextOption = this.stories.length <= this.end
   }
-  
+
   loadMoreSearchResults() {
     this.searchStart = this.searchEnd
     this.searchEnd = this.searchEnd + this.pageDisplayCount
@@ -125,7 +128,7 @@ export class AppComponent implements OnInit {
     this.applySearchFilter()
     this.hideNextOption = this.filteredStories.length <= this.searchEnd
   }
-  applySearchFilter(){
+  applySearchFilter() {
     this.filteredStories = this.stories.filter(s => {
       return s.title.toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1 || s.by.toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1
     })
